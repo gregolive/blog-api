@@ -1,5 +1,5 @@
 import express from 'express';
-import post_controller from '../controllers/postController.js';
+import * as post_controller from '../controllers/postController.js';
 
 const router = express.Router();
 
