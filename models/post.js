@@ -44,8 +44,12 @@ const PostSchema = new Schema(
   }
 );
 
+PostSchema.virtual('formatted_title').get(function() {
+  return this.title.replace(/\s+/g, '-');
+});
+
 PostSchema.virtual('url').get(function() {
-  return '/post/' + this.title;
+  return '/post/' + this.formatted_title;
 });
 
 export default mongoose.model('Post', PostSchema);
