@@ -1,3 +1,4 @@
+import { body, validationResult } from 'express-validator';
 import Post from '../../models/post.js';
 
 // Display list of all Posts.
@@ -11,9 +12,42 @@ export const post_detail = (req, res) => {
 };
 
 // Handle Post create on POST.
-export const post_create_post = (req, res) => {
-  res.send('NOT IMPLEMENTED: Post create POST');
-};
+export const post_create_post = [
+  // Validate and sanitize
+  body('title', 'Title required').trim().isLength({ min: 1 }).escape().custom((title) => {
+    return Post.findOne({ title }).then((post) => {
+      if (post) { return Promise.reject('You already have a blog post with this title'); }
+    });
+  }),
+  body('content', 'Content required').trim().isLength({ min: 1 }).escape(),
+  body('preview').trim().escape(),
+  body('visibility').escape(),
+
+  // Process request
+  async (req, res, next) => {
+    console.log(req.body);
+    const errors = validationResult(req).mapped();
+
+    let post = new Post(
+      { 
+        title: req.body.title,
+        content: req.body.content,
+        author: '6268d3e429d867f9b90d985a',
+        preview: req.body.preview,
+        visibility: req.body.visibility,
+      }
+    );
+
+    if (Object.keys(errors).length > 0) {
+      return res.status(400).json({ errors })
+    } else {
+      post.save((err) => {
+        if (err) { return next(err); }
+        res.json(post.formatted_title);
+      });
+    }
+  }
+];
 
 // Handle Post delete on POST.
 export const post_delete_post = (req, res) => {

@@ -6,7 +6,6 @@ const PostSchema = new Schema(
     title: {
       type: String,
       required: true,
-      unique: true,
       maxLength: 100,
     },
     content: {
@@ -45,11 +44,7 @@ const PostSchema = new Schema(
 );
 
 PostSchema.virtual('formatted_title').get(function() {
-  return this.title.replace(/\s+/g, '-');
-});
-
-PostSchema.virtual('url').get(function() {
-  return '/post/' + this.formatted_title;
+  return this.title.replace(/\s+/g, '-').toLowerCase();
 });
 
 export default mongoose.model('Post', PostSchema);

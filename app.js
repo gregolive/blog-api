@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import mongoose from 'mongoose';
 import passport from 'passport';
+import cors from 'cors';
 
 import { userRouterV1, postRouterV1, commentRouterV1 } from './routes/v1.js';
 
@@ -9,6 +10,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 // mongoose connection set up
 const mongoDB = process.env.MONGODB;
