@@ -1,5 +1,6 @@
 import { body, validationResult } from 'express-validator';
 import Post from '../../models/post.js';
+import Comment from '../../models/comment.js';
 
 // Display list of all Posts.
 export const post_list = (req, res) => {
@@ -7,8 +8,13 @@ export const post_list = (req, res) => {
 };
 
 // Display detail page for a specific Post.
-export const post_detail = (req, res) => {
-  res.send('NOT IMPLEMENTED: Post detail: ' + req.params.title);
+export const post_detail = async (req, res) => {
+  const post = await Post.findOne({ 'author': req.user._id }).populate('author')
+    .catch((err) => { return next(err); });
+  const comments = Comment.find({ 'user': req.user._id });
+  
+  if (err) { return res.status(400).json({ err }); }
+  res.json({ post, comments });
 };
 
 // Handle Post create on POST.
@@ -25,7 +31,6 @@ export const post_create_post = [
 
   // Process request
   async (req, res, next) => {
-    console.log(req.body);
     const errors = validationResult(req).mapped();
 
     let post = new Post(
@@ -39,11 +44,12 @@ export const post_create_post = [
     );
 
     if (Object.keys(errors).length > 0) {
-      return res.status(400).json({ errors })
+      return res.status(400).json({ errors });
     } else {
       post.save((err) => {
         if (err) { return next(err); }
-        res.json(post.formatted_title);
+        post.populate('author');
+        res.json({ post, url: post.formatted_title });
       });
     }
   }
