@@ -33,19 +33,19 @@ export const post_create_post = [
   async (req, res, next) => {
     const errors = validationResult(req).mapped();
 
-    let post = new Post(
-      { 
-        title: req.body.title,
-        content: req.body.content,
-        author: '6268d3e429d867f9b90d985a',
-        preview: req.body.preview,
-        visibility: req.body.visibility,
-      }
-    );
-
     if (Object.keys(errors).length > 0) {
       return res.status(400).json({ errors });
     } else {
+      const post = new Post(
+        { 
+          title: req.body.title,
+          content: req.body.content,
+          author: '6268d3e429d867f9b90d985a',
+          preview: req.body.preview,
+          visibility: req.body.visibility,
+        }
+      );
+
       post.save((err) => {
         if (err) { return next(err); }
         post.populate('author');

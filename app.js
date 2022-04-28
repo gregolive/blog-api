@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import passport from 'passport';
 import cors from 'cors';
 
+import initializePassport from './config/passport.js';
 import { userRouterV1, postRouterV1, commentRouterV1 } from './routes/v1.js';
 
 const app = express();
@@ -17,6 +18,10 @@ const mongoDB = process.env.MONGODB;
 mongoose.connect(mongoDB, { useNewUrlParser: true , useUnifiedTopology: true});
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+// passport setup
+initializePassport(passport);
+app.use(passport.initialize());
 
 // define v1 routes
 app.use('/api/v1/user', userRouterV1);

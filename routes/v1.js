@@ -1,4 +1,5 @@
 import express from 'express';
+import * as auth_controller from '../controllers/v1/authController.js';
 import * as user_controller from '../controllers/v1/userController.js';
 import * as post_controller from '../controllers/v1/postController.js';
 import * as comment_controller from '../controllers/v1/commentController.js';
@@ -6,6 +7,9 @@ import * as comment_controller from '../controllers/v1/commentController.js';
 const userRouterV1 = express.Router();
 const postRouterV1 = express.Router();
 const commentRouterV1 = express.Router();
+
+// Authentication routes
+userRouterV1.post('/login', auth_controller.auth_login_post)
 
 // User routes
 userRouterV1.post('/create', user_controller.user_create_post);
