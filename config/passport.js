@@ -6,7 +6,7 @@ import User from '../models/user.js';
 const initialize = (passport) => {
   passport.use(
     new LocalStrategy.Strategy((username, password, done) => {
-      User.findOne({ username }, (err, user) => {
+      User.findOne({ username}, (err, user) => {
         if (err) { return done(err); }
         if (!user) {
           return done(null, false, { message: 'Username not found' });

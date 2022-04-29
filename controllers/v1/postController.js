@@ -3,17 +3,19 @@ import Post from '../../models/post.js';
 import Comment from '../../models/comment.js';
 
 // Display list of all Posts.
-export const post_list = (req, res) => {
-  res.send('NOT IMPLEMENTED: Post list');
+export const post_list = async (req, res) => {
+  const posts = await Post.find({ 'author': req.params.user_id }).populate('author')
+    .catch((err) => { return next(err); });
+
+  res.json({ posts });
 };
 
 // Display detail page for a specific Post.
 export const post_detail = async (req, res) => {
-  const post = await Post.findOne({ 'author': req.user._id }).populate('author')
-    .catch((err) => { return next(err); });
-  const comments = Comment.find({ 'user': req.user._id });
+  const post = await Post.findOne({ 'title': req.params.title }).populate('author')
+    .catch((err) => { return res.status(400).json({ err }); });
+  const comments = await Comment.find({ 'post': post._id });
   
-  if (err) { return res.status(400).json({ err }); }
   res.json({ post, comments });
 };
 
@@ -40,7 +42,7 @@ export const post_create_post = [
         { 
           title: req.body.title,
           content: req.body.content,
-          author: '6268d3e429d867f9b90d985a',
+          author: req.body.author,
           preview: req.body.preview,
           visibility: req.body.visibility,
         }

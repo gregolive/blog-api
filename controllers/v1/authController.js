@@ -13,7 +13,10 @@ export const auth_login_post = async (req, res) => {
     req.login(user, {session: false}, (err) => {
       if (err) { res.send(err); }
       const token = jwt.sign({ user }, process.env.JWT_SECRET);
-      return res.json({ user, token });
+      return res.json({ 
+        user: { _id: user._id, username: user.username, name: user.name },
+        token
+      });
     });
   })(req, res);
 };
