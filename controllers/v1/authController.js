@@ -6,7 +6,7 @@ export const auth_login_post = async (req, res) => {
   passport.authenticate('local', {session: false}, (err, user, info) => {
     if (err || !user) {
       return res.status(400).json({
-        message: 'Something is not right',
+        message: info,
         user : user
       });
     }
