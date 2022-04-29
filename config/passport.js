@@ -6,7 +6,7 @@ import User from '../models/user.js';
 const initialize = (passport) => {
   passport.use(
     new LocalStrategy.Strategy((username, password, done) => {
-      User.findOne({ username: username }, (err, user) => {
+      User.findOne({ username }, (err, user) => {
         if (err) { return done(err); }
         if (!user) {
           return done(null, false, { message: 'Username not found' });
@@ -23,25 +23,20 @@ const initialize = (passport) => {
       });
     })
   );
+
   passport.use(new JWTStrategy.Strategy({
     jwtFromRequest: JWTStrategy.ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey : process.env.JWT_SECRET,
   }, (jwtPayload, callback) => {
     return User.findOneById(jwtPayload.id)
-      .then(user => {
+      .then((user) => {
         return callback(null, user);
       })
-      .catch(err => {
+      .catch((err) => {
         return callback(err);
       });
     }
   ));
-  passport.serializeUser((user, done) => done(null, user.id));
-  passport.deserializeUser((id, done) => {
-    User.findById(id, (err, user) => {
-      done(err, user);
-    });
-  });
 };
 
 export default initialize;

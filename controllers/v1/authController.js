@@ -1,4 +1,4 @@
-import User from '../../models/user.js';
+import passport from 'passport';
 import jwt from 'jsonwebtoken';
 
 // Handle User login on POST.
@@ -12,7 +12,7 @@ export const auth_login_post = async (req, res) => {
     }
     req.login(user, {session: false}, (err) => {
       if (err) { res.send(err); }
-      const token = jwt.sign(user, process.env.JWT_SECRET);
+      const token = jwt.sign({ user }, process.env.JWT_SECRET);
       return res.json({ user, token });
     });
   })(req, res);
