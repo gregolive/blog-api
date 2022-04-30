@@ -8,6 +8,11 @@ const PostSchema = new Schema(
       required: true,
       maxLength: 100,
     },
+    formatted_title: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     content: {
       type: String,
       required: true,
@@ -40,11 +45,14 @@ const PostSchema = new Schema(
       type: Date,
       default: () => Date.now(),
     },
+  }, {
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true },
   }
 );
 
-PostSchema.virtual('formatted_title').get(function() {
-  return this.title.replace(/\s+/g, '-').toLowerCase();
+PostSchema.virtual('url').get(function() {
+  return '/post/' + this.formatted_title;
 });
 
 export default mongoose.model('Post', PostSchema);

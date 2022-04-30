@@ -4,7 +4,7 @@ import Comment from '../../models/comment.js';
 
 // Display list of all Posts.
 export const post_list = async (req, res) => {
-  const posts = await Post.find({ 'author': req.params.user_id }).populate('author')
+  const posts = await Post.find({ 'author': req.params.user_id }).populate('author', 'username first_name last_name')
     .catch((err) => { return next(err); });
 
   res.json({ posts });
@@ -12,7 +12,7 @@ export const post_list = async (req, res) => {
 
 // Display detail page for a specific Post.
 export const post_detail = async (req, res) => {
-  const post = await Post.findOne({ 'title': req.params.title }).populate('author')
+  const post = await Post.findOne({ 'formatted_title': req.params.title }).populate('author', 'username first_name last_name')
     .catch((err) => { return res.status(400).json({ err }); });
   const comments = await Comment.find({ 'post': post._id });
   
@@ -23,7 +23,7 @@ export const post_detail = async (req, res) => {
 export const post_create_post = [
   // Validate and sanitize
   body('title', 'Title required').trim().isLength({ min: 1 }).escape().custom((title) => {
-    return Post.findOne({ title }).then((post) => {
+    return Post.findOne({ title: title.toLowerCase() }).then((post) => {
       if (post) { return Promise.reject('You already have a blog post with this title'); }
     });
   }),
@@ -41,6 +41,7 @@ export const post_create_post = [
       const post = new Post(
         { 
           title: req.body.title,
+          formatted_title: req.body.title.replace(/\s+/g, '-').toLowerCase(),
           content: req.body.content,
           author: req.body.author,
           preview: req.body.preview,
@@ -50,8 +51,8 @@ export const post_create_post = [
 
       post.save((err) => {
         if (err) { return next(err); }
-        post.populate('author');
-        res.json({ post, url: post.formatted_title });
+        post.populate('author', 'username first_name last_name');
+        res.json({ post });
       });
     }
   }

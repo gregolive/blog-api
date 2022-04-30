@@ -39,6 +39,9 @@ const UserSchema = new Schema(
       type: Date,
       default: () => Date.now(),
     },
+  }, {
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true },
   }
 );
 
