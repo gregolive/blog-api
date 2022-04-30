@@ -28,6 +28,7 @@ const PostSchema = new Schema(
     },
     preview: {
       type: String,
+      required: true,
       maxLength: 200,
     },
     visibility: {
