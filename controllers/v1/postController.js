@@ -66,7 +66,10 @@ export const post_create_post = [
 
 // Handle Post delete on POST.
 export const post_delete_post = (req, res) => {
-  res.send('NOT IMPLEMENTED: Post delete POST');
+  Post.findByIdAndRemove(req.params.id, (err) => {
+    if (err) { return next(err); }
+    res.json({ msg: 'Blog post deleted! 👍' });
+  });
 };
 
 // Handle Post update on POST.
