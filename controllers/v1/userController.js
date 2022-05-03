@@ -36,7 +36,7 @@ export const user_create_post = [
     } else {
       bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
         if (err) { return next(err); }
-        let user = new User({
+        const user = new User({
           username: req.body.username,
           first_name: req.body.first_name,
           last_name: req.body.last_name,

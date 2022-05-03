@@ -22,8 +22,8 @@ userRouterV1.get('/:username', user_controller.user_detail);
 postRouterV1.get('/all', post_controller.post_list);
 postRouterV1.get('/all/:user_id', post_controller.user_post_list);
 postRouterV1.post('/create', post_controller.post_create_post);
-postRouterV1.post('/:title/delete', post_controller.post_delete_post);
-postRouterV1.post('/:title/update', post_controller.post_update_post);
+postRouterV1.post('/:id/delete', post_controller.post_delete_post);
+postRouterV1.post('/:id/update', post_controller.post_update_post);
 postRouterV1.get('/:title', post_controller.post_detail);
 
 // Comment routes
