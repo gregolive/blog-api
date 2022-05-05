@@ -16,7 +16,7 @@ authRouterV1.post('/', auth_controller.auth_login_post)
 userRouterV1.post('/create', user_controller.user_create_post);
 userRouterV1.post('/:username/delete', user_controller.user_delete_post);
 userRouterV1.post('/:username/update', user_controller.user_update_post);
-userRouterV1.get('/:username', user_controller.user_detail);
+userRouterV1.get('/:id', user_controller.user_detail);
 
 // Post routes
 postRouterV1.get('/all', post_controller.post_list);

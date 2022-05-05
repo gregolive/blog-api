@@ -3,7 +3,7 @@ import Post from '../../models/post.js';
 import Comment from '../../models/comment.js';
 
 // Display list of all Posts.
-export const post_list = async (req, res) => {
+export const post_list = async (req, res, next) => {
   const posts = await Post.find({}).sort({ created_at: -1 }).populate('author', 'username first_name last_name')
     .catch((err) => { return next(err); });
 
@@ -11,7 +11,7 @@ export const post_list = async (req, res) => {
 };
 
 // Display list of all of a User's Posts.
-export const user_post_list = async (req, res) => {
+export const user_post_list = async (req, res, next) => {
   const posts = await Post.find({ 'author': req.params.user_id }).sort({ created_at: -1 }).populate('author', 'username first_name last_name')
     .catch((err) => { return next(err); });
 
@@ -65,7 +65,7 @@ export const post_create_post = [
 ];
 
 // Handle Post delete on POST.
-export const post_delete_post = (req, res) => {
+export const post_delete_post = (req, res, next) => {
   Post.findByIdAndRemove(req.params.id, (err) => {
     if (err) { return next(err); }
     res.json({ msg: 'Blog post deleted! 👍' });

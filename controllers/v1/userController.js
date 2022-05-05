@@ -1,18 +1,24 @@
 import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 import User from '../../models/user.js';
+import Post from '../../models/post.js';
 
-// Display detail page for a specific User.
-export const user_detail = (req, res) => {
-  res.send('NOT IMPLEMENTED: User detail: ' + req.params.username);
+// Display detail page for a specific User with their number of posts and recent posts.
+export const user_detail = async (req, res, next) => {
+  const post_count = await Post.countDocuments({ 'author': req.params.id })
+    .catch((err) => { return next(err); });
+  const recent_posts = await Post.find({ 'author': req.params.id }).sort({ created_at: -1 }).limit(3).populate('author', 'username first_name last_name')
+    .catch((err) => { return next(err); });
+
+  res.json({ post_count, recent_posts });
 };
 
 // Handle User create on POST.
 export const user_create_post = [
   // Validate and sanitize
   body('username').trim().isLength({ min: 5 }).escape().withMessage('Username must be at least 5 characters long')
-    .isAlphanumeric().withMessage('Username has non-alphanumeric characters').custom(username => {
-      return User.findOne({ username: username }).then(user => {
+    .isAlphanumeric().withMessage('Username has non-alphanumeric characters').custom((username) => {
+      return User.findOne({ username }).then((user) => {
         if (user) { return Promise.reject('Username already in use'); }
       });
     }),
@@ -20,8 +26,8 @@ export const user_create_post = [
     .isAlphanumeric().withMessage('First name has non-alphanumeric characters'),
   body('last_name').trim().isLength({ min: 1 }).escape().withMessage('Last name required')
     .isAlphanumeric().withMessage('Last name has non-alphanumeric characters'),
-  body('email').trim().escape().isEmail().withMessage('Email must be valid').custom(email => {
-    return User.findOne({ email: email }).then(user => {
+  body('email').trim().escape().isEmail().withMessage('Email must be valid').custom((email) => {
+    return User.findOne({ email }).then((user) => {
       if (user) { return Promise.reject('Email already in use'); }
     });
   }),
