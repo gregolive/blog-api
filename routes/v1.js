@@ -20,7 +20,7 @@ userRouterV1.get('/:id', user_controller.user_detail);
 
 // Post routes
 postRouterV1.get('/all', post_controller.post_list);
-postRouterV1.get('/all/:user_id', post_controller.user_post_list);
+postRouterV1.get('/all/:username', post_controller.user_post_list);
 postRouterV1.post('/create', post_controller.post_create_post);
 postRouterV1.post('/:id/delete', post_controller.post_delete_post);
 postRouterV1.post('/:id/update', post_controller.post_update_post);

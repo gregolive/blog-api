@@ -1,4 +1,5 @@
 import { body, validationResult } from 'express-validator';
+import User from '../../models/user.js';
 import Post from '../../models/post.js';
 import Comment from '../../models/comment.js';
 
@@ -12,7 +13,9 @@ export const post_list = async (req, res, next) => {
 
 // Display list of all of a User's Posts.
 export const user_post_list = async (req, res, next) => {
-  const posts = await Post.find({ 'author': req.params.user_id }).sort({ created_at: -1 }).populate('author', 'username first_name last_name')
+  const user = await User.findOne({ 'username': req.params.username })
+    .catch((err) => { return next(err); });
+  const posts = await Post.find({ 'author': user._id }).sort({ created_at: -1 }).populate('author', 'username first_name last_name')
     .catch((err) => { return next(err); });
 
   res.json({ posts });
