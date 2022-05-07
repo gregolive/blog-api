@@ -104,7 +104,7 @@ export const post_update_post = [
     if (Object.keys(errors).length > 0) {
       return res.status(400).json({ errors });
     } else {
-      Post.findByIdAndUpdate(req.params.id, post, {}, (err, updated_post) => {
+      Post.findByIdAndUpdate(req.params.id, post, { new: true }, (err, updated_post) => {
         if (err) { return next(err); }
         res.json({ post: updated_post });
       });

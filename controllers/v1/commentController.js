@@ -1,16 +1,6 @@
 import { body, validationResult } from 'express-validator';
 import Comment from '../../models/comment.js';
 
-// Display list of all Comments.
-export const comment_list = (req, res) => {
-  res.send('NOT IMPLEMENTED: Comment list');
-};
-
-// Display detail page for a specific Comment.
-export const comment_detail = (req, res) => {
-  res.send('NOT IMPLEMENTED: Comment detail: ' + req.params.id);
-};
-
 // Handle Comment create on POST.
 export const comment_create_post = [
   // Validate and sanitize
@@ -41,10 +31,35 @@ export const comment_create_post = [
 
 // Handle Comment delete on POST.
 export const comment_delete_post = (req, res) => {
-  res.send('NOT IMPLEMENTED: Comment delete POST');
+  Comment.findByIdAndRemove(req.params.id, (err) => {
+    if (err) { return next(err); }
+    res.json({ msg: 'Comment deleted! 👍' });
+  });
 };
 
 // Handle Comment update on POST.
-export const comment_update_post = (req, res) => {
-  res.send('NOT IMPLEMENTED: Comment update POST');
-};
+export const comment_update_post = [
+  // Validate and sanitize
+  body('content', 'Comment required').trim().isLength({ min: 1 }).escape(),
+
+  // Process request
+  (req, res, next) => {
+    const errors = validationResult(req).mapped();
+
+    const comment = new Comment({
+      content: req.body.content,
+      author: req.body.user_id,
+      post: req.params.post_id,
+      _id: req.params.id,
+    });
+
+    if (Object.keys(errors).length > 0) {
+      return res.status(400).json({ errors });
+    } else {
+      Comment.findByIdAndUpdate(req.params.id, comment, { new: true }).populate('author', 'username').exec((err, updated_comment) => {
+        if (err) { return next(err); }
+        res.json({ comment: updated_comment, msg: 'Comment updated! 👍' });
+      })
+    }
+  }
+];

@@ -114,19 +114,9 @@ export const user_update_post = [
           email: req.body.email,
           password: hashedPassword,
         });
-        User.findByIdAndUpdate(req.body._id, user, {}, (error) => {
+        User.findByIdAndUpdate(req.body._id, user, { new: true }, (error, updated_user) => {
           if (error) { return next(error); }
-          res.status(200).json({ 
-            updated_user: {
-              _id: user._id,
-              username: user.username,
-              name: user.name,
-              first_name: user.first_name,
-              last_name: user.last_name,
-              email: user.email,
-            },
-            msg: 'Account details updated! 👍' }
-          );
+          res.status(200).json({ updated_user, msg: 'Account details updated! 👍' });
         });
       });
     }

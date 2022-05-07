@@ -27,10 +27,8 @@ postRouterV1.post('/:id/update', post_controller.post_update_post);
 postRouterV1.get('/:title', post_controller.post_detail);
 
 // Comment routes
-commentRouterV1.get('/all', comment_controller.comment_list);
 commentRouterV1.post('/create', comment_controller.comment_create_post);
 commentRouterV1.post('/:id/delete', comment_controller.comment_delete_post);
 commentRouterV1.post('/:id/update', comment_controller.comment_update_post);
-commentRouterV1.get('/:id', comment_controller.comment_detail);
 
 export { authRouterV1, userRouterV1, postRouterV1, commentRouterV1 };
