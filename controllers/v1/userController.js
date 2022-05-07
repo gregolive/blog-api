@@ -107,12 +107,12 @@ export const user_update_post = [
       bcrypt.hash(userPassword, 10, (err, hashedPassword) => {
         if (err) { return next(err); }
         let user = new User({
-          _id: req.body._id,
           username: req.body.username,
           first_name: req.body.first_name,
           last_name: req.body.last_name,
           email: req.body.email,
           password: hashedPassword,
+          _id: req.body._id,
         });
         User.findByIdAndUpdate(req.body._id, user, { new: true }, (error, updated_user) => {
           if (error) { return next(error); }

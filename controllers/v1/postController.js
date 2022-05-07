@@ -80,7 +80,7 @@ export const post_update_post = [
   // Validate and sanitize
   body('title', 'Title required').trim().isLength({ min: 1 }).escape().custom((title, { req }) => {
     return Post.findOne({ formatted_title: title.replace(/[^a-zA-Z ]/g, '').replace(/\s+/g, '-').toLowerCase() }).then((post) => {
-      if (post && post._id !== req.params.id) { return Promise.reject('A blog post with this title already exists'); }
+      if (post && post.id !== req.params.id) { return Promise.reject('A blog post with this title already exists'); }
     });
   }),
   body('content', 'Content required').trim().isLength({ min: 1 }).escape(),
