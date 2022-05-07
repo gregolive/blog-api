@@ -87,7 +87,7 @@ export const user_update_post = [
     });
   }),
   body('current_password').trim().escape().custom((password, { req }) => {
-    return User.findOne({ id: req.body._id }).then((user) => {
+    return User.findOne({ _id: req.body._id }).then((user) => {
       bcrypt.compare(password, user.password, (err) => {
         if (err) { return Promise.reject('Incorrect password'); }
       });

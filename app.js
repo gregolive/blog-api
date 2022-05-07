@@ -27,6 +27,6 @@ app.use(passport.initialize());
 app.use('/api/v1/login', authRouterV1);
 app.use('/api/v1/user', userRouterV1);
 app.use('/api/v1/post', postRouterV1);
-app.use('/api/v1/post/:post_title/comments', commentRouterV1);
+app.use('/api/v1/post/:post_id/comments', commentRouterV1);
 
 export default app;

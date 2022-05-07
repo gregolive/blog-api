@@ -25,7 +25,7 @@ export const user_post_list = async (req, res, next) => {
 export const post_detail = async (req, res) => {
   const post = await Post.findOne({ 'formatted_title': req.params.title }).populate('author', 'username first_name last_name')
     .catch((err) => { return res.status(400).json({ err }); });
-  const comments = await Comment.find({ 'post': post._id });
+  const comments = await Comment.find({ 'post': post._id }).sort({ created_at: -1 }).lean().populate('author', 'username');
   
   res.json({ post, comments });
 };
@@ -60,7 +60,6 @@ export const post_create_post = [
 
       post.save((err) => {
         if (err) { return next(err); }
-        post.populate('author', 'username first_name last_name');
         res.json({ post });
       });
     }
@@ -68,11 +67,12 @@ export const post_create_post = [
 ];
 
 // Handle Post delete on POST.
-export const post_delete_post = (req, res, next) => {
-  Post.findByIdAndRemove(req.params.id, (err) => {
-    if (err) { return next(err); }
-    res.json({ msg: 'Blog post deleted! 👍' });
-  });
+export const post_delete_post = async (req, res, next) => {
+  await Post.findByIdAndRemove(req.params.id)
+    .catch((err) => { return next(err); });
+  await Comment.deleteMany({ 'post': req.params.id });
+
+  res.json({ msg: 'Blog post deleted! 👍' });
 };
 
 // Handle Post update on POST.
@@ -106,7 +106,6 @@ export const post_update_post = [
     } else {
       Post.findByIdAndUpdate(req.params.id, post, {}, (err, updated_post) => {
         if (err) { return next(err); }
-        updated_post.populate('author', 'username first_name last_name');
         res.json({ post: updated_post });
       });
     }

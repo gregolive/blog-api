@@ -7,7 +7,7 @@ import * as comment_controller from '../controllers/v1/commentController.js';
 const authRouterV1 = express.Router();
 const userRouterV1 = express.Router();
 const postRouterV1 = express.Router();
-const commentRouterV1 = express.Router();
+const commentRouterV1 = express.Router({ mergeParams: true });
 
 // Authentication routes
 authRouterV1.post('/', auth_controller.auth_login_post)
