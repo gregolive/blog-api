@@ -43,7 +43,7 @@ export const post_create_post = [
   body('visibility').escape(),
 
   // Process request
-  async (req, res, next) => {
+  (req, res, next) => {
     const errors = validationResult(req).mapped();
 
     if (Object.keys(errors).length > 0) {

@@ -37,6 +37,10 @@ const PostSchema = new Schema(
       enum: ['Visible', 'Hidden'],
       default: 'Visible',
     },
+    img: {
+      data: Buffer,
+      contentType: String
+    },
     created_at: {
       type: Date,
       immutable: true,
