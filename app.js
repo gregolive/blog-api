@@ -1,7 +1,8 @@
 import 'dotenv/config';
 import express from 'express';
-import path from 'path';
 import cors from 'cors';
+import compression from 'compression';
+import helmet from 'helmet';
 import mongoose from 'mongoose';
 import passport from 'passport';
 
@@ -11,9 +12,12 @@ import { authRouterV1, userRouterV1, postRouterV1, commentRouterV1 } from './rou
 
 const app = express();
 
+// middleware
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb', parameterLimit: 100000 }));
 app.use(cors());
+app.use(compression());
+app.use(helmet());
 
 // mongodb/mongoose connection set up
 initializeMongo(mongoose);
